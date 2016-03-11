@@ -7,7 +7,7 @@ struct SeqElemChoice(HashSet<SeqElem>);
 
 impl SeqElemChoice {
     // TODO: Add ability to identify modulus.
-    fn from_i32_pair(x: i32, y: i32) -> SeqElemChoice {
+    fn from_i32_pair(x: i32, y: i32) -> Self {
         let mut set = HashSet::new();
         set.insert(SeqElem::Const(y));
         set.insert(SeqElem::Plus(y - x));
@@ -25,12 +25,16 @@ impl SeqElemChoice {
 }
 
 
-fn get_choices(seq: &[i32]) -> Vec<SeqElemChoice> {
-    (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect::<Vec<_>>()
-}
+pub struct Analyzer(Vec<SeqElemChoice>);
 
-pub fn analyze_full(seq: &[i32]) -> Vec<SeqElem> {
-    let choices = get_choices(seq);
+impl Analyzer {
+    pub fn from_seq(seq: &[i32]) -> Self {
+        let vec = (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect();
 
-    choices[0].0.iter().filter(|choice| choices.iter().all(|c| c.0.contains(choice))).cloned().collect::<Vec<_>>()
+        Analyzer(vec)
+    }
+
+    pub fn analyze_one(&self) -> Vec<SeqElem> {
+        self.0[0].0.iter().filter(|choice| self.0.iter().all(|c| c.0.contains(choice))).cloned().collect::<Vec<_>>()
+    }
 }
