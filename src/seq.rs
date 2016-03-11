@@ -26,7 +26,7 @@ impl Display for SeqElem {
 pub struct Seq(Vec<SeqElem>);
 
 impl Seq {
-    pub fn new(elems: Vec<SeqElem>) -> Seq {
+    pub fn new(elems: Vec<SeqElem>) -> Self {
         Seq(elems)
     }
 }
