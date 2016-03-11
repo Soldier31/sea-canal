@@ -34,7 +34,7 @@ impl Analyzer {
         Analyzer(vec)
     }
 
-    pub fn analyze_one(&self) -> Vec<SeqElem> {
-        self.0[0].0.iter().filter(|choice| self.0.iter().all(|c| c.0.contains(choice))).cloned().collect::<Vec<_>>()
+    pub fn analyze_one(&self) -> Vec<Seq> {
+        self.0[0].0.iter().filter(|choice| self.0.iter().all(|c| c.0.contains(choice))).map(|choice| Seq::new(vec![choice.clone()])).collect::<Vec<_>>()
     }
 }
