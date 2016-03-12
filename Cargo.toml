@@ -2,5 +2,6 @@
 name = "sea-canal"
 version = "0.1.0"
 authors = ["Saghm Rossi <saghmrossi@gmail.com>"]
+keywords = ["sequence", "pattern", "analysis", "analyze", "analyzer"]
 
 [dependencies]
