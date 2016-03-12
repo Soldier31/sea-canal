@@ -1,5 +1,6 @@
 use std::fmt::{Display, Formatter, Error};
 
+
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum SeqElem {
     Plus(i32),
@@ -28,6 +29,18 @@ pub struct Seq(Vec<SeqElem>);
 impl Seq {
     pub fn new(elems: Vec<SeqElem>) -> Self {
         Seq(elems)
+    }
+
+    pub fn empty() -> Self {
+        Seq(Vec::new())
+    }
+
+    pub fn extend_each<T>(&self, iter: T) -> Vec<Self> where T: Iterator<Item=SeqElem> {
+        iter.map(|elem| {
+            let mut v = self.0.clone();
+            v.push(elem);
+            Seq(v)
+        }).collect()
     }
 }
 

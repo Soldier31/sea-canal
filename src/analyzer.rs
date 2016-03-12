@@ -1,8 +1,9 @@
 use std::collections::HashSet;
 
 use seq::{Seq, SeqElem};
+use stepper::Stepper;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct SeqElemChoice(HashSet<SeqElem>);
 
 impl SeqElemChoice {
@@ -12,11 +13,11 @@ impl SeqElemChoice {
         set.insert(SeqElem::Const(y));
         set.insert(SeqElem::Plus(y - x));
 
-        if x != 0 && y / x != 0 {
+        if x != 0 && y % x == 0 {
             set.insert(SeqElem::Mult(y / x));
         }
 
-        if y != 0 && x / y != 0 {
+        if y != 0 && x % y == 0 {
             set.insert(SeqElem::Div(x / y));
         }
 
@@ -24,17 +25,42 @@ impl SeqElemChoice {
     }
 }
 
+pub type Analyzer = Vec<SeqElemChoice>;
 
-pub struct Analyzer(Vec<SeqElemChoice>);
+pub trait Analyze {
+    fn from_seq(seq: &[i32]) -> Self;
+    fn analyze_n(&self, n: usize) -> Vec<Seq>;
+}
 
-impl Analyzer {
-    pub fn from_seq(seq: &[i32]) -> Self {
-        let vec = (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect();
+fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
+    let base = match vec.first() {
+        Some(&SeqElemChoice(ref choices)) => choices.to_owned(),
+        None => return HashSet::new()
+    };
 
-        Analyzer(vec)
+    vec.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
+}
+
+impl Analyze for Analyzer {
+    fn from_seq(seq: &[i32]) -> Self {
+        (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect()
     }
 
-    pub fn analyze_one(&self) -> Vec<Seq> {
-        self.0[0].0.iter().filter(|choice| self.0.iter().all(|c| c.0.contains(choice))).map(|choice| Seq::new(vec![choice.clone()])).collect::<Vec<_>>()
+    fn analyze_n(&self, range: usize) -> Vec<Seq> {
+        let mut seqs = vec![Seq::empty()];
+
+        for i in 0..range {
+            let choices: Vec<_> = step!(i => self.len(); range).map(|i| self[i].to_owned()).collect();
+
+            let mut new = Vec::new();
+
+            for seq in seqs.iter_mut() {
+                new.extend(seq.extend_each(intersection(&choices[..]).into_iter()));
+            }
+
+            seqs = new;
+        }
+
+        seqs
     }
 }
