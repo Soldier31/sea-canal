@@ -37,16 +37,46 @@ fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
 pub type Analyzer = Vec<SeqElemChoice>;
 
 pub trait Analyze {
-    fn from_seq(seq: &[i32]) -> Self;
-    fn analyze_n(&self, n: usize) -> Vec<Seq>;
+    fn from_slice(seq: &[i32]) -> Self;
+
+    fn find_any_pattern_of_length(&self, n: usize) -> Option<Seq> {
+        self.find_patterns_of_length(n).pop()
+    }
+
+    fn find_any_pattern(&self, max: usize) -> Option<Seq> {
+        for i in 1..max {
+            let mut vec = self.find_patterns_of_length(i);
+
+            if !vec.is_empty() {
+                return vec.pop();
+            }
+        }
+
+        return None;
+    }
+
+
+    fn find_patterns_of_length(&self, n: usize) -> Vec<Seq>;
+
+    fn find_patterns(&self, max: usize) -> Vec<Seq> {
+        for i in 1..max {
+            let vec = self.find_patterns_of_length(i);
+
+            if !vec.is_empty() {
+                return vec;
+            }
+        }
+
+        return Vec::new();
+    }
 }
 
 impl Analyze for Analyzer {
-    fn from_seq(seq: &[i32]) -> Self {
+    fn from_slice(seq: &[i32]) -> Self {
         (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect()
     }
 
-    fn analyze_n(&self, range: usize) -> Vec<Seq> {
+    fn find_patterns_of_length(&self, range: usize) -> Vec<Seq> {
         let mut seqs = vec![Seq::empty()];
 
         for i in 0..range {
