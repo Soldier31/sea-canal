@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use seq::{Seq, SeqElem};
 use stepper::Stepper;
 
+/// A set of SeqElems, representing the set of valid operations at a given point in a sequence.
 #[derive(Clone, Debug)]
 pub struct SeqElemChoice(HashSet<SeqElem>);
 
@@ -50,15 +51,21 @@ fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
     vec.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
 }
 
+/// Identifies patterns that describe a given sequence.
 pub type Analyzer = Vec<SeqElemChoice>;
 
 pub trait Analyze {
+    /// Creates a new Analyze from a slice of integers.
     fn from_slice(seq: &[i32]) -> Self;
 
+    /// Attempts to find exactly one pattern of `n` operations that described the given sequence.
     fn find_any_pattern_of_length(&self, n: usize) -> Option<Seq> {
         self.find_patterns_of_length(n).pop()
     }
 
+    /// Attempts to find exactly one pattern of maximum size `max` (in terms of number of
+    /// operations) that describes the given sequence. It returns the smallest such pattern it can
+    /// find .
     fn find_any_pattern(&self, max: usize) -> Option<Seq> {
         for i in 1..max {
             let mut vec = self.find_patterns_of_length(i);
@@ -71,9 +78,13 @@ pub trait Analyze {
         return None;
     }
 
-
+    /// Finds all patterns with `n` operations that describe the given sequence.
     fn find_patterns_of_length(&self, n: usize) -> Vec<Seq>;
 
+    /// Finds patterns of maximum size `max` (in terms of number of operations) that describe the
+    /// given sequence. It will return all such patterns that are of minimal size (i.e. if a
+    /// sequence can be described by a pattern of two operations, it will return all such patterns,
+    /// but none of size three or greater).
     fn find_patterns(&self, max: usize) -> Vec<Seq> {
         for i in 1..max {
             let vec = self.find_patterns_of_length(i);
