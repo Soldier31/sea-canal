@@ -1,3 +1,4 @@
+#[macro_use]
 extern crate sea_canal;
 
 use sea_canal::{Analyze, Analyzer};
@@ -10,7 +11,7 @@ fn find_any_pattern_of_length() {
     let analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(None, analyzer.find_any_pattern_of_length(3));
-    assert_eq!(Some(Seq::new(vec![Plus(3), Plus(-1)])), analyzer.find_any_pattern_of_length(2));
+    assert_eq!(Some(seq![Plus(3), Plus(-1)]), analyzer.find_any_pattern_of_length(2));
 }
 
 #[test]
@@ -19,7 +20,7 @@ fn find_any_pattern() {
     let analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(None, analyzer.find_any_pattern(1));
-    assert_eq!(Some(Seq::new(vec![Plus(3), Plus(-1)])), analyzer.find_any_pattern(4));
+    assert_eq!(Some(seq![Plus(3), Plus(-1)]), analyzer.find_any_pattern(4));
 }
 
 
@@ -31,22 +32,22 @@ fn find_patterns_of_length() {
     assert_eq!(Vec::<Seq>::new(), analyzer.find_patterns_of_length(3));
     assert_eq!(
         vec![
-            Seq::new(vec![Const(4), Const(2)]),
-            Seq::new(vec![Const(4), Div(2)]),
-            Seq::new(vec![Const(4), Plus(-2)]),
-            Seq::new(vec![Const(4), SquareRoot]),
-            Seq::new(vec![Mult(2), Const(2)]),
-            Seq::new(vec![Mult(2), Div(2)]),
-            Seq::new(vec![Mult(2), Plus(-2)]),
-            Seq::new(vec![Mult(2), SquareRoot]),
-            Seq::new(vec![Plus(2), Const(2)]),
-            Seq::new(vec![Plus(2), Div(2)]),
-            Seq::new(vec![Plus(2), Plus(-2)]),
-            Seq::new(vec![Plus(2), SquareRoot]),
-            Seq::new(vec![Square, Const(2)]),
-            Seq::new(vec![Square, Div(2)]),
-            Seq::new(vec![Square, Plus(-2)]),
-            Seq::new(vec![Square, SquareRoot]),
+            seq![Const(4), Const(2)],
+            seq![Const(4), Div(2)],
+            seq![Const(4), Plus(-2)],
+            seq![Const(4), SquareRoot],
+            seq![Mult(2), Const(2)],
+            seq![Mult(2), Div(2)],
+            seq![Mult(2), Plus(-2)],
+            seq![Mult(2), SquareRoot],
+            seq![Plus(2), Const(2)],
+            seq![Plus(2), Div(2)],
+            seq![Plus(2), Plus(-2)],
+            seq![Plus(2), SquareRoot],
+            seq![Square, Const(2)],
+            seq![Square, Div(2)],
+            seq![Square, Plus(-2)],
+            seq![Square, SquareRoot],
         ],
         analyzer.find_patterns_of_length(2)
     );
@@ -60,22 +61,22 @@ fn find_patterns() {
     assert_eq!(Vec::<Seq>::new(), analyzer.find_patterns(1));
     assert_eq!(
         vec![
-            Seq::new(vec![Const(4), Const(2)]),
-            Seq::new(vec![Const(4), Div(2)]),
-            Seq::new(vec![Const(4), Plus(-2)]),
-            Seq::new(vec![Const(4), SquareRoot]),
-            Seq::new(vec![Mult(2), Const(2)]),
-            Seq::new(vec![Mult(2), Div(2)]),
-            Seq::new(vec![Mult(2), Plus(-2)]),
-            Seq::new(vec![Mult(2), SquareRoot]),
-            Seq::new(vec![Plus(2), Const(2)]),
-            Seq::new(vec![Plus(2), Div(2)]),
-            Seq::new(vec![Plus(2), Plus(-2)]),
-            Seq::new(vec![Plus(2), SquareRoot]),
-            Seq::new(vec![Square, Const(2)]),
-            Seq::new(vec![Square, Div(2)]),
-            Seq::new(vec![Square, Plus(-2)]),
-            Seq::new(vec![Square, SquareRoot]),
+            seq![Const(4), Const(2)],
+            seq![Const(4), Div(2)],
+            seq![Const(4), Plus(-2)],
+            seq![Const(4), SquareRoot],
+            seq![Mult(2), Const(2)],
+            seq![Mult(2), Div(2)],
+            seq![Mult(2), Plus(-2)],
+            seq![Mult(2), SquareRoot],
+            seq![Plus(2), Const(2)],
+            seq![Plus(2), Div(2)],
+            seq![Plus(2), Plus(-2)],
+            seq![Plus(2), SquareRoot],
+            seq![Square, Const(2)],
+            seq![Square, Div(2)],
+            seq![Square, Plus(-2)],
+            seq![Square, SquareRoot],
         ],
         analyzer.find_patterns(4)
     );
