@@ -1,6 +1,6 @@
 extern crate sea_canal;
 
-use sea_canal::analyzer::{Analyze, Analyzer};
+use sea_canal::{Analyze, Analyzer};
 
 fn main() {
     let s = &[1, 4, 3, 6, 5];
@@ -20,6 +20,14 @@ fn main() {
     }
 
     let s = &[1, 10, 19, 28];
+    println!("\n{:?}", s);
+    let analyzer = Analyzer::from_seq(s);
+
+    for seq in analyzer.analyze_n(1) {
+        println!("{}", seq);
+    }
+
+    let s = &[1, 9, 19, 28];
     println!("\n{:?}", s);
     let analyzer = Analyzer::from_seq(s);
 

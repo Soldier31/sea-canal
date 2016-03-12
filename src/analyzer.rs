@@ -4,7 +4,7 @@ use seq::{Seq, SeqElem};
 use stepper::Stepper;
 
 #[derive(Clone, Debug)]
-struct SeqElemChoice(HashSet<SeqElem>);
+pub struct SeqElemChoice(HashSet<SeqElem>);
 
 impl SeqElemChoice {
     // TODO: Add ability to identify modulus.
@@ -25,13 +25,6 @@ impl SeqElemChoice {
     }
 }
 
-pub type Analyzer = Vec<SeqElemChoice>;
-
-pub trait Analyze {
-    fn from_seq(seq: &[i32]) -> Self;
-    fn analyze_n(&self, n: usize) -> Vec<Seq>;
-}
-
 fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
     let base = match vec.first() {
         Some(&SeqElemChoice(ref choices)) => choices.to_owned(),
@@ -39,6 +32,13 @@ fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
     };
 
     vec.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
+}
+
+pub type Analyzer = Vec<SeqElemChoice>;
+
+pub trait Analyze {
+    fn from_seq(seq: &[i32]) -> Self;
+    fn analyze_n(&self, n: usize) -> Vec<Seq>;
 }
 
 impl Analyze for Analyzer {

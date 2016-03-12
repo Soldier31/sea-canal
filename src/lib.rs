@@ -1,5 +1,7 @@
 #[macro_use]
 mod stepper;
 
+mod analyzer;
 pub mod seq;
-pub mod analyzer;
+
+pub use analyzer::{Analyzer, Analyze};
