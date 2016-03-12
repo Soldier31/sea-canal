@@ -124,13 +124,13 @@ that's in every transition. Obviously, in this case, there is no such choice:
 
 ```
 # There is no operation that appears in each of the lists below
-=1,  -6,  /7
-=3,  +2,  *3
-=9,  +6,  *3, ^2
-=3,  -6,  /3, root 2
-=5,  +2
-=25, +20, *5, ^2
-=19, -6
+7 -> 1:   -6,  /7
+1 -> 3:   =3,  +2,  *3
+3 -> 9:   =9,  +6,  *3, ^2
+9 -> 3:   =3,  -6,  /3, root 2
+3 -> 5:   =5,  +2
+5 -> 25:  =25, +20, *5, ^2
+25 -> 19: =19, -6
 ```
 
 We move on to `n = 2`. The slicing looks like this:
@@ -151,10 +151,10 @@ and the groups would be:
 In the first group, our list of choices is this:
 
 ```
-=1,  -6,  /7
-=9,  +6,  *3, ^2
-=5,  +2
-=19, -6
+7 -> 1:   =1,  -6,  /7
+3 -> 9:   =9,  +6,  *3, ^2
+3 -> 5:   =5,  +2
+25 -> 19: =19, -6
 ```
 
 We still don't have any operation that appears in all of the choices, which
@@ -177,9 +177,9 @@ And the groups would be:
 Looking at the first group, we find the common operation `-6`:
 
 ```
-=1,  -6,  /7
-=3,  -6,  /3, root 2
-=19, -6
+7 -> 1: =1,  -6,  /7
+9 -> 3: =3,  -6,  /3, root 2
+25 -> 19: =19, -6
 ```
 
 In the second group, we find `+2`:
