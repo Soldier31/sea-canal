@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/saghm/sea-canal.svg)](https://travis-ci.org/saghm/sea-canal)
+[![crates.io](https://img.shields.io/crates/v/sea-canal.svg)](https://crates.io/crates/sea-canal) [![Build Status](https://travis-ci.org/saghm/sea-canal.svg)](https://travis-ci.org/saghm/sea-canal)
 
 SeaCanal
 ====================================================================================================================================
