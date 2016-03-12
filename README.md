@@ -35,13 +35,15 @@ that though, cheating is bad).
 
 ## Installation
 
+### Library
+
 SeaCanal is published on [crates.io](https://crates.io), so you can use it like
 any other Cargo package:
 
 Add the following to your `Cargo.toml` under the `[dependencies]` section:
 
 ```
-sea-canal = "0.1.0"
+sea-canal = "0.1.1"
 ```
 
 Add the following to the root of your project:
@@ -53,7 +55,13 @@ extern crate sea_canal;
 The next time you run `cargo build`, the package will be installed for that
 project.
 
+### Standalone CLI
+
+Simply run `cargo install sea-canal`.
+
 ## Usage
+
+### Library
 
 First, import `Analyzer`, as well as the `Analyze` trait:
 
@@ -74,6 +82,12 @@ maximum length or exact length of the pattern, depending on the method):
 ```
 println!("{:?}", analyzer.find_any_pattern(7))
 ```
+
+### Standalone CLI
+
+Assuming you've set up your path correctly for your `cargo install` binaries,
+you can run SeaCanal with `scnl`. Then just type in a (whitespace-delimited)
+sequence of integers, and hit "enter".
 
 ## How does SeaCanal work?
 
