@@ -3,6 +3,14 @@ extern crate sea_canal;
 use sea_canal::{Analyze, Analyzer};
 
 fn main() {
+    let s = &[1, 2, 4, 5, 25];
+    println!("{:?}", s);
+    let analyzer = Analyzer::from_slice(s);
+
+    for seq in analyzer.find_any_pattern(3) {
+        println!("{}", seq);
+    }
+
     let s = &[1, 4, 3, 6, 5];
     println!("{:?}", s);
     let analyzer = Analyzer::from_slice(s);

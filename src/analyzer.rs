@@ -21,6 +21,22 @@ impl SeqElemChoice {
             set.insert(SeqElem::Div(x / y));
         }
 
+        if x * x == y {
+            set.insert(SeqElem::Square);
+        }
+
+        if y * y == x {
+            set.insert(SeqElem::SquareRoot);
+        }
+
+        if x * x * x == y {
+            set.insert(SeqElem::Cube);
+        }
+
+        if y * y * y == x {
+            set.insert(SeqElem::CubeRoot);
+        }
+
         SeqElemChoice(set)
     }
 }
