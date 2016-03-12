@@ -89,6 +89,7 @@ impl Analyze for Analyzer {
             }
 
             seqs = new;
+            seqs.sort();
         }
 
         seqs

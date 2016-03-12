@@ -1,14 +1,16 @@
 use std::fmt::{Display, Formatter, Error};
 
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum SeqElem {
-    Plus(i32),
-    Mult(i32),
+    // Listed alphabetically to make equality testing for groups of seqeuences easier.
+    Const(i32),
     Div(i32),
     Mod(i32),
-    Const(i32),
+    Mult(i32),
+    Plus(i32),
 }
+
 
 
 impl Display for SeqElem {
@@ -24,6 +26,7 @@ impl Display for SeqElem {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Seq(Vec<SeqElem>);
 
 impl Seq {
@@ -95,7 +98,7 @@ mod tests {
 
     #[test]
     fn fmt_seq_elem_const() {
-        assert_eq!("= -4", format!("{}", Const(0)));
+        assert_eq!("= -4", format!("{}", Const(-4)));
         assert_eq!("= 4", format!("{}", Const(4)));
     }
 
