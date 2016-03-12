@@ -1,50 +1,50 @@
 use std::collections::HashSet;
 
-use seq::{Seq, SeqElem};
+use pattern::{Pattern, PatternElem};
 use stepper::Stepper;
 
-/// A set of SeqElems, representing the set of valid operations at a given point in a sequence.
+/// A set of PatternElems, representing the set of valid operations at a given point in a sequence.
 #[derive(Clone, Debug)]
-pub struct SeqElemChoice(HashSet<SeqElem>);
+pub struct PatternElemChoice(HashSet<PatternElem>);
 
-impl SeqElemChoice {
+impl PatternElemChoice {
     // TODO: Add ability to identify modulus.
     fn from_i32_pair(x: i32, y: i32) -> Self {
         let mut set = HashSet::new();
-        set.insert(SeqElem::Const(y));
-        set.insert(SeqElem::Plus(y - x));
+        set.insert(PatternElem::Const(y));
+        set.insert(PatternElem::Plus(y - x));
 
         if x != 0 && y % x == 0 {
-            set.insert(SeqElem::Mult(y / x));
+            set.insert(PatternElem::Mult(y / x));
         }
 
         if y != 0 && x % y == 0 {
-            set.insert(SeqElem::Div(x / y));
+            set.insert(PatternElem::Div(x / y));
         }
 
         if x * x == y {
-            set.insert(SeqElem::Square);
+            set.insert(PatternElem::Square);
         }
 
         if y * y == x {
-            set.insert(SeqElem::SquareRoot);
+            set.insert(PatternElem::SquareRoot);
         }
 
         if x * x * x == y {
-            set.insert(SeqElem::Cube);
+            set.insert(PatternElem::Cube);
         }
 
         if y * y * y == x {
-            set.insert(SeqElem::CubeRoot);
+            set.insert(PatternElem::CubeRoot);
         }
 
-        SeqElemChoice(set)
+        PatternElemChoice(set)
     }
 }
 
-fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
+fn intersection(vec: &[PatternElemChoice]) -> HashSet<PatternElem> {
     let base = match vec.first() {
-        Some(&SeqElemChoice(ref choices)) => choices.to_owned(),
+        Some(&PatternElemChoice(ref choices)) => choices.to_owned(),
         None => return HashSet::new()
     };
 
@@ -52,21 +52,21 @@ fn intersection(vec: &[SeqElemChoice]) -> HashSet<SeqElem> {
 }
 
 /// Identifies patterns that describe a given sequence.
-pub type Analyzer = Vec<SeqElemChoice>;
+pub type Analyzer = Vec<PatternElemChoice>;
 
 pub trait Analyze {
     /// Creates a new Analyze from a slice of integers.
     fn from_slice(seq: &[i32]) -> Self;
 
     /// Attempts to find exactly one pattern of `n` operations that described the given sequence.
-    fn find_any_pattern_of_length(&self, n: usize) -> Option<Seq> {
+    fn find_any_pattern_of_length(&self, n: usize) -> Option<Pattern> {
         self.find_patterns_of_length(n).pop()
     }
 
     /// Attempts to find exactly one pattern of maximum size `max` (in terms of number of
     /// operations) that describes the given sequence. It returns the smallest such pattern it can
     /// find .
-    fn find_any_pattern(&self, max: usize) -> Option<Seq> {
+    fn find_any_pattern(&self, max: usize) -> Option<Pattern> {
         for i in 1..max {
             let mut vec = self.find_patterns_of_length(i);
 
@@ -79,13 +79,13 @@ pub trait Analyze {
     }
 
     /// Finds all patterns with `n` operations that describe the given sequence.
-    fn find_patterns_of_length(&self, n: usize) -> Vec<Seq>;
+    fn find_patterns_of_length(&self, n: usize) -> Vec<Pattern>;
 
     /// Finds patterns of maximum size `max` (in terms of number of operations) that describe the
     /// given sequence. It will return all such patterns that are of minimal size (i.e. if a
     /// sequence can be described by a pattern of two operations, it will return all such patterns,
     /// but none of size three or greater).
-    fn find_patterns(&self, max: usize) -> Vec<Seq> {
+    fn find_patterns(&self, max: usize) -> Vec<Pattern> {
         for i in 1..max {
             let vec = self.find_patterns_of_length(i);
 
@@ -100,25 +100,27 @@ pub trait Analyze {
 
 impl Analyze for Analyzer {
     fn from_slice(seq: &[i32]) -> Self {
-        (0..seq.len() - 1).map(|i| SeqElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect()
+        (0..seq.len() - 1).map(|i| PatternElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect()
     }
 
-    fn find_patterns_of_length(&self, range: usize) -> Vec<Seq> {
-        let mut seqs = vec![Seq::empty()];
+    fn find_patterns_of_length(&self, range: usize) -> Vec<Pattern> {
+        let mut pats = vec![Pattern::empty()];
 
         for i in 0..range {
             let choices: Vec<_> = step!(i => self.len(); range).map(|i| self[i].to_owned()).collect();
 
             let mut new = Vec::new();
 
-            for seq in seqs.iter_mut() {
-                new.extend(seq.extend_each(intersection(&choices[..]).into_iter()));
+            for pat in pats.iter_mut() {
+                new.extend(pat.extend_each(intersection(&choices[..]).into_iter()));
             }
 
-            seqs = new;
-            seqs.sort();
+            pats = new;
+
+            // Makes results deterministic, which is helpful.
+            pats.sort();
         }
 
-        seqs
+        pats
     }
 }
