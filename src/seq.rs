@@ -1,6 +1,6 @@
 use std::fmt::{Display, Formatter, Error};
 
-
+/// Operations from one integer to another.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum SeqElem {
     // Listed alphabetically to make equality testing for groups of seqeuences easier.
@@ -32,18 +32,39 @@ impl Display for SeqElem {
     }
 }
 
+/// A sequence of operations defining a pattern.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Seq(Vec<SeqElem>);
 
+#[macro_export]
+macro_rules! seq {
+    ($($elem:expr),*) => (Seq::new(vec![$($elem),*]))
+}
+
 impl Seq {
+    /// Constructs a new sequence given a vector of operations.
     pub fn new(elems: Vec<SeqElem>) -> Self {
         Seq(elems)
     }
 
+    /// Constructs a new empty sequence.
     pub fn empty() -> Self {
-        Seq(Vec::new())
+        Seq::new(Vec::new())
     }
 
+    /// Appends each of the items in `iter` to the sequence separately, returning a vector of
+    /// sequences.
+    ///
+    /// ```
+    /// # #[macro_use] extern crate sea_canal;
+    /// # use sea_canal::seq::Seq;
+    /// # use sea_canal::seq::SeqElem::{Plus, Mult, Div};
+    /// # fn main() {
+    /// let seq = seq![Plus(3), Mult(2)];
+    /// let seqs = seq.extend_each(vec![Div(2), Div(3)].into_iter());
+    /// assert_eq!(seqs, vec![seq![Plus(3), Mult(2), Div(2)], seq![Plus(3), Mult(2), Div(3)]]);
+    /// # }
+    /// ```
     pub fn extend_each<T>(&self, iter: T) -> Vec<Self> where T: Iterator<Item=SeqElem> {
         iter.map(|elem| {
             let mut v = self.0.clone();
@@ -130,8 +151,8 @@ mod tests {
 
     #[test]
     fn fmt_seq() {
-        assert_eq!("", format!("{}", Seq(Vec::new())));
-        assert_eq!("+4", format!("{}", Seq(vec![Plus(4)])));
+        assert_eq!("", format!("{}", Seq::empty()));
+        assert_eq!("+4", format!("{}", seq![Plus(4)]));
         assert_eq!("+4, %-6", format!("{}", Seq::new(vec![Plus(4), Mod(-6)])));
         assert_eq!("+4, %-6, -12, *42, /3, =9", format!("{}", Seq::new(vec![Plus(4), Mod(-6), Plus(-12), Mult(42), Div(3), Const(9)])));
         assert_eq!("^2, root 2, ^3, root 3", format!("{}", Seq::new(vec![Square, SquareRoot, Cube, CubeRoot])))
