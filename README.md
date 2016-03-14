@@ -25,7 +25,7 @@ SeaCanal.
 
 ## What is SeaCanal?
 
-SeaCanal is a "sequence analyzer" written in Rust (seq-anal...get it? Look, if
+SeaCanal is a "sequence analyzer" written in Rust ("seq-anal"...get it? Look, if
 you don't want to deal with awful puns, you probably shouldn't be reading things
 on my Github). Basically, you give it a sequence of numbers, and it tells you
 any patterns it can find in it. Theoretically, if you were to be taking one of
