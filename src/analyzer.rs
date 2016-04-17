@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use pattern::{Pattern, PatternElem};
+use pattern::{CustomPatternElem, Pattern, PatternElem};
 use stepper::Stepper;
 
 /// A set of PatternElems, representing the set of valid operations at a given point in a sequence.
@@ -8,8 +8,8 @@ use stepper::Stepper;
 pub struct PatternElemChoice(HashSet<PatternElem>);
 
 impl PatternElemChoice {
-    // TODO: Add ability to identify modulus.
-    fn from_i32_pair(x: i32, y: i32) -> Self {
+        // TODO: Add ability to identify modulus.
+    fn from_i32_pair(x: i32, y: i32, pats: Vec<CustomPatternElem>) -> Self {
         let mut set = HashSet::new();
         set.insert(PatternElem::Const(y));
         set.insert(PatternElem::Plus(y - x));
@@ -38,6 +38,12 @@ impl PatternElemChoice {
             set.insert(PatternElem::CubeRoot);
         }
 
+        for custom in pats {
+            if custom.check(x, y) {
+                set.insert(PatternElem::Custom(custom));
+            }
+        }
+
         PatternElemChoice(set)
     }
 }
@@ -57,6 +63,9 @@ pub type Analyzer = Vec<PatternElemChoice>;
 pub trait Analyze {
     /// Creates a new Analyze from a slice of integers.
     fn from_slice(seq: &[i32]) -> Self;
+
+    /// Same as `from_slice`, but allows custom patterns to be specified.
+    fn with_custom_patterns(seq: &[i32], pats: Vec<CustomPatternElem>) -> Self;
 
     /// Attempts to find exactly one pattern of `n` operations that described the given sequence.
     fn find_any_pattern_of_length(&self, n: usize) -> Option<Pattern> {
@@ -100,8 +109,15 @@ pub trait Analyze {
 
 impl Analyze for Analyzer {
     fn from_slice(seq: &[i32]) -> Self {
-        (0..seq.len() - 1).map(|i| PatternElemChoice::from_i32_pair(seq[i], seq[i + 1])).collect()
+        Self::with_custom_patterns(seq, Vec::new())
     }
+
+    fn with_custom_patterns(seq: &[i32], pats: Vec<CustomPatternElem>) -> Self {
+        (0..seq.len() - 1).map(|i|
+            PatternElemChoice::from_i32_pair(seq[i], seq[i + 1], pats.clone())
+        ).collect()
+    }
+
 
     fn find_patterns_of_length(&self, range: usize) -> Vec<Pattern> {
         let mut pats = vec![Pattern::empty()];
