@@ -78,7 +78,7 @@ How does SeaCanal work?
 
 (This is really verbose, so feel free to skip it, especially if you find math boring).
 
-First, SeaCanal looks at each pair of adjacent numbers in the sequence and computes the possible operations that could lead from one to another. Right now, the operations it supports are rather limited (see [Operation Types](##operation-types)). For example, the analysis of the first sequence above would look like this:
+First, SeaCanal looks at each pair of adjacent numbers in the sequence and computes the possible operations that could lead from one to another. Right now, the operations it supports are rather limited (see [Operation Types](#operation-types)). For example, the analysis of the first sequence above would look like this:
 
 ```
 7 -> 1:   =1,  -6,  /7
