@@ -29,7 +29,7 @@ SeaCanal is published on [crates.io](https://crates.io), so you can use it like 
 Add the following to your `Cargo.toml` under the `[dependencies]` section:
 
 ```
-sea-canal = "0.1"
+sea-canal = "0.2"
 ```
 
 Add the following to the root of your project:
@@ -78,7 +78,7 @@ How does SeaCanal work?
 
 (This is really verbose, so feel free to skip it, especially if you find math boring).
 
-First, SeaCanal looks at each pair of adjacent numbers in the sequence and computes the possible operations that could lead from one to another. Right now, the operations it supports are rather limited; it supports addition/substraction of a constant, multiplication/division of a constant, squaring, cubing, square-rooting, and cube-rooting, as well as standalone constants (e.g. "always 7"). For example, the analysis of the first sequence above would look like this:
+First, SeaCanal looks at each pair of adjacent numbers in the sequence and computes the possible operations that could lead from one to another. Right now, the operations it supports are rather limited (see [Operation Types](##operation-types)). For example, the analysis of the first sequence above would look like this:
 
 ```
 7 -> 1:   =1,  -6,  /7
@@ -141,7 +141,7 @@ We still don't have any operation that appears in all of the choices, which mean
 With `n = 3`, the slices would be:
 
 ```
-Slice 1: 7 -> 1,  1 -> 3, 3 -> 9  
+Slice 1: 7 -> 1,  1 -> 3, 3 -> 9
 Slice 2: 9 -> 3,  3 -> 5, 5 -> 25
 Slice 3: 25 -> 19
 ```
@@ -177,3 +177,51 @@ And finally, in the last group, we find `^2`, which completes the pattern:
 ```
 
 (Note that the common operations for each transition don't actually have to be in the same "column" like they are for these three groups; I just put them like that so it would be visually easier to notice).
+
+## Operation Types
+
+### Built-in
+
+#### Basic Arithmetic
+
+* +
+* -
+* \*
+* /
+
+**NOTE**: Modulus is not yet implemented
+
+#### Exponents
+
+* Square
+* Square root
+* Cube
+* Cube root
+
+### Constants
+
+A constant element in a sequence. For example, the sequence `2 6 8 4 12 8 4` could be described by the pattern `*3, =8, -4` (where `=8` means a constant value of `8`).
+
+### Custom operations
+
+You can define custom operation by making an instance of the `CustomPatternElem` struct. Doing this requires defining a function
+of type `(i32, i32) -> bool`, which acts as a test to determine if a given pair of adjacent numbers in a sequence can be decribed by that operations. For example, the following code tests a sequence with a custom operation for raising a number to the fourth power:
+
+```rust
+#[macro_use]
+extern crate sea_canal;
+
+use sea_canal::{Analyze, Analyzer};
+use sea_canal::pattern::{CustomPatternElem, Pattern};
+use sea_canal::pattern::PatternElem::*;
+
+fn pow4(i: i32, j: i32) -> bool {
+    i * i * i * i == j
+}
+
+let pow4_pattern = CustomPatternElem::new(pow4, "^4");
+let slice = &[2, 16, 3, 81, 68];
+let analyzer = Analyzer::with_custom_patterns(slice, vec![pow4_pattern.clone()]);
+
+assert_eq!(Some(pat![Custom(pow4_pattern), Minus(13)]), analyzer.find_any_pattern(4));
+```
