@@ -42,13 +42,13 @@ impl PatternElemChoice {
     }
 }
 
-fn intersection(vec: &[PatternElemChoice]) -> HashSet<PatternElem> {
-    let base = match vec.first() {
+fn intersection(slice: &[PatternElemChoice]) -> HashSet<PatternElem> {
+    let base = match slice.first() {
         Some(&PatternElemChoice(ref choices)) => choices.to_owned(),
         None => return HashSet::new()
     };
 
-    vec.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
+    slice.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
 }
 
 /// Identifies patterns that describe a given sequence.
