@@ -7,12 +7,30 @@ pub enum PatternElem {
     Const(i32),
     Cube,
     CubeRoot,
+    Custom(CustomPatternElem),
     Div(i32),
     Mod(i32),
     Mult(i32),
     Plus(i32),
     Square,
     SquareRoot,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct CustomPatternElem {
+    check: fn(i32, i32) -> bool,
+    repr: String,
+}
+
+impl CustomPatternElem {
+    pub fn new(check: fn(i32, i32) -> bool, repr: &str) -> Self {
+        CustomPatternElem { check: check, repr: String::from(repr) }
+    }
+
+    pub fn check(&self, x: i32, y: i32) -> bool {
+        let check = self.check;
+        check(x, y)
+    }
 }
 
 impl Display for PatternElem {
@@ -28,6 +46,7 @@ impl Display for PatternElem {
             PatternElem::Cube => write!(fmt, "^3"),
             PatternElem::SquareRoot => write!(fmt, "root 2"),
             PatternElem::CubeRoot => write!(fmt, "root 3"),
+            PatternElem::Custom(CustomPatternElem { ref repr, .. }) => write!(fmt, "{}", repr),
         }
     }
 }
