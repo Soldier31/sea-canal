@@ -23,8 +23,8 @@ pub struct CustomPatternElem {
 }
 
 impl CustomPatternElem {
-    pub fn new(check: fn(i32, i32) -> bool, repr: String) -> Self {
-        CustomPatternElem { check: check, repr: repr }
+    pub fn new(check: fn(i32, i32) -> bool, repr: &str) -> Self {
+        CustomPatternElem { check: check, repr: String::from(repr) }
     }
 
     pub fn check(&self, x: i32, y: i32) -> bool {
