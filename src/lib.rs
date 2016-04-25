@@ -2,4 +2,4 @@
 #[macro_use] pub mod pattern;
 mod analyzer;
 
-pub use analyzer::{Analyzer, Analyze};
+pub use analyzer::Analyzer;

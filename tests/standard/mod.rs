@@ -1,4 +1,4 @@
-use sea_canal::{Analyze, Analyzer};
+use sea_canal::Analyzer;
 use sea_canal::pattern::Pattern;
 use sea_canal::pattern::PatternElem::*;
 

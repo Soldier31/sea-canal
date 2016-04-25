@@ -3,7 +3,7 @@ extern crate sea_canal;
 use std::env;
 use std::io;
 
-use sea_canal::{Analyze, Analyzer};
+use sea_canal::Analyzer;
 
 fn main() {
     match env::args().nth(1) {
