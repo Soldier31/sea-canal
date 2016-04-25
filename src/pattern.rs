@@ -17,6 +17,16 @@ pub enum PatternElem {
     SquareRoot,
 }
 
+impl PatternElem {
+    fn get_operand(&self) -> Option<i32> {
+        match *self {
+            PatternElem::Plus(i) | PatternElem::Mult(i) |
+            PatternElem::Div(i) | PatternElem::Mod(i) => Some(i),
+            _ => None
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct CustomPatternElem {
     check: fn(i32, i32) -> bool,
@@ -78,8 +88,8 @@ impl Pattern {
     ///
     /// ```
     /// # #[macro_use] extern crate sea_canal;
-    /// # use sea_canal::pattern::Pattern;
-    /// # use sea_canal::pattern::PatternElem::{Plus, Mult, Div};
+    /// # use sea_canal::Pattern;
+    /// # use sea_canal::PatternElem::{Plus, Mult, Div};
     /// # fn main() {
     /// let pat = pat![Plus(3), Mult(2)];
     /// let pats = pat.extend_each(vec![Div(2), Div(3)].into_iter());

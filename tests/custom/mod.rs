@@ -1,6 +1,6 @@
 use sea_canal::Analyzer;
-use sea_canal::pattern::{CustomPatternElem, Pattern};
-use sea_canal::pattern::PatternElem::*;
+use sea_canal::{CustomPatternElem, Pattern};
+use sea_canal::PatternElem::*;
 
 fn pow4(i: i32, j: i32) -> bool {
     i * i * i * i == j

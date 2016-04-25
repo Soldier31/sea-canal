@@ -1,52 +1,8 @@
 use std::collections::HashSet;
 
+use choice::PatternElemChoice;
 use pattern::{CustomPatternElem, Pattern, PatternElem};
 use stepper::Stepper;
-
-/// A set of PatternElems, representing the set of valid operations at a given point in a sequence.
-#[derive(Clone, Debug)]
-pub struct PatternElemChoice(HashSet<PatternElem>);
-
-impl PatternElemChoice {
-    // TODO: Add ability to identify modulus.
-    fn from_i32_pair(x: i32, y: i32, pats: Vec<CustomPatternElem>) -> Self {
-        let mut set = HashSet::new();
-        set.insert(PatternElem::Const(y));
-        set.insert(PatternElem::Plus(y - x));
-
-        if x != 0 && y % x == 0 {
-            set.insert(PatternElem::Mult(y / x));
-        }
-
-        if y != 0 && x % y == 0 {
-            set.insert(PatternElem::Div(x / y));
-        }
-
-        if x * x == y {
-            set.insert(PatternElem::Square);
-        }
-
-        if y * y == x {
-            set.insert(PatternElem::SquareRoot);
-        }
-
-        if x * x * x == y {
-            set.insert(PatternElem::Cube);
-        }
-
-        if y * y * y == x {
-            set.insert(PatternElem::CubeRoot);
-        }
-
-        for custom in pats {
-            if custom.check(x, y) {
-                set.insert(PatternElem::Custom(custom));
-            }
-        }
-
-        PatternElemChoice(set)
-    }
-}
 
 /// Identifies patterns that describe a given sequence.
 pub struct Analyzer {
@@ -72,6 +28,7 @@ impl Analyzer {
 
     /// Attempts to find exactly one pattern of `n` operations that described the given sequence.
     pub fn find_any_pattern_of_length(&self, n: usize) -> Option<Pattern> {
+        // TODO: Short-circuit finding one pattern instead of all of them
         self.find_patterns_of_length(n).pop()
     }
 
@@ -82,6 +39,7 @@ impl Analyzer {
         for i in 1..max {
             let mut vec = self.find_patterns_of_length(i);
 
+            // TODO: Short-circuit finding one pattern instead of all of them
             if !vec.is_empty() {
                 return vec.pop();
             }
@@ -95,7 +53,7 @@ impl Analyzer {
         let mut pats = vec![Pattern::empty()];
 
         for i in 0..range {
-            let choices: Vec<_> = step!(i => self.len(); range).map(|i| self.choices[i].to_owned()).collect();
+            let choices: Vec<_> = step!(i => self.len(); range).map(|i| self.choices[i].clone()).collect();
 
             let mut new = Vec::new();
 
@@ -135,7 +93,7 @@ impl Analyzer {
 
     fn intersection(slice: &[PatternElemChoice]) -> HashSet<PatternElem> {
         let base = match slice.first() {
-            Some(&PatternElemChoice(ref choices)) => choices.to_owned(),
+            Some(&PatternElemChoice(ref choices)) => choices.clone(),
             None => return HashSet::new()
         };
 

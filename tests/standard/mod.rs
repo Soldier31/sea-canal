@@ -1,6 +1,6 @@
 use sea_canal::Analyzer;
-use sea_canal::pattern::Pattern;
-use sea_canal::pattern::PatternElem::*;
+use sea_canal::Pattern;
+use sea_canal::PatternElem::*;
 
 #[test]
 fn find_any_pattern_of_length() {
