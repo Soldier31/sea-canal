@@ -1,4 +1,8 @@
 use std::fmt::{Display, Formatter, Error};
+use std::iter::FromIterator;
+use std::slice::Iter;
+
+use repeat::is_repeating_with_predicate;
 
 /// Operations from one integer to another.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -18,11 +22,27 @@ pub enum PatternElem {
 }
 
 impl PatternElem {
-    fn get_operand(&self) -> Option<i32> {
+    pub fn get_operand(&self) -> Option<i32> {
         match *self {
             PatternElem::Plus(i) | PatternElem::Mult(i) |
             PatternElem::Div(i) | PatternElem::Mod(i) => Some(i),
             _ => None
+        }
+    }
+
+    pub fn same_operator_type(&self, other: &Self) -> bool {
+        match (self, other) {
+            (&PatternElem::Custom(ref p1), &PatternElem::Custom(ref p2)) => p1 == p2,
+            (&PatternElem::Const(_), &PatternElem::Const(_)) |
+            (&PatternElem::Cube, &PatternElem::Cube) |
+            (&PatternElem::CubeRoot, &PatternElem::CubeRoot) |
+            (&PatternElem::Div(_), &PatternElem::Div(_)) |
+            (&PatternElem::Mod(_), &PatternElem::Mod(_)) |
+            (&PatternElem::Mult(_), &PatternElem::Mult(_)) |
+            (&PatternElem::Plus(_), &PatternElem::Plus(_)) |
+            (&PatternElem::Square, &PatternElem::SquareRoot) |
+            (&PatternElem::SquareRoot, &PatternElem::SquareRoot) => true,
+            _ => false
         }
     }
 }
@@ -67,6 +87,21 @@ impl Display for PatternElem {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Pattern(Vec<PatternElem>);
 
+impl IntoIterator for Pattern {
+    type Item = PatternElem;
+    type IntoIter = ::std::vec::IntoIter<PatternElem>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
+impl FromIterator<PatternElem> for Pattern {
+    fn from_iter<I: IntoIterator<Item=PatternElem>>(iterator: I) -> Self {
+        Pattern(iterator.into_iter().collect())
+    }
+}
+
 #[macro_export]
 macro_rules! pat {
     ($($elem:expr),*) => (Pattern::new(vec![$($elem),*]))
@@ -81,6 +116,14 @@ impl Pattern {
     /// Constructs a new empty pattern.
     pub fn empty() -> Self {
         Pattern::new(Vec::new())
+    }
+
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty()
     }
 
     /// Appends each of the items in `iter` to the pattern separately, returning a vector of
@@ -102,6 +145,14 @@ impl Pattern {
             v.push(elem);
             Pattern::new(v)
         }).collect()
+    }
+
+    pub fn iter(&self) -> Iter<PatternElem> {
+        self.0.iter()
+    }
+
+    pub fn has_repeating_types(&self) -> bool {
+        is_repeating_with_predicate(&self.0, |x, y| x.same_operator_type(y))
     }
 }
 

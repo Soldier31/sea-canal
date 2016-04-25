@@ -1,5 +1,7 @@
 use std::collections::HashSet;
-use pattern::{CustomPatternElem, Pattern, PatternElem};
+use std::iter::FromIterator;
+
+use pattern::{CustomPatternElem, PatternElem};
 
 /// A set of PatternElems, representing the set of valid operations at a given point in a sequence.
 #[derive(Clone, Debug)]
@@ -43,5 +45,20 @@ impl PatternElemChoice {
         }
 
         PatternElemChoice(set)
+    }
+}
+
+impl IntoIterator for PatternElemChoice {
+    type Item = PatternElem;
+    type IntoIter = ::std::collections::hash_set::IntoIter<PatternElem>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
+impl FromIterator<PatternElem> for PatternElemChoice {
+    fn from_iter<I: IntoIterator<Item=PatternElem>>(iterator: I) -> Self {
+        PatternElemChoice(iterator.into_iter().collect())
     }
 }

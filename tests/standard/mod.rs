@@ -5,7 +5,7 @@ use sea_canal::PatternElem::*;
 #[test]
 fn find_any_pattern_of_length() {
     let slice = &[1, 4, 3, 6, 5];
-    let analyzer = Analyzer::from_slice(slice);
+    let mut analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(None, analyzer.find_any_pattern_of_length(3));
     assert_eq!(Some(pat![Plus(3), Plus(-1)]), analyzer.find_any_pattern_of_length(2));
@@ -14,7 +14,7 @@ fn find_any_pattern_of_length() {
 #[test]
 fn find_any_pattern() {
     let slice = &[1, 4, 3, 6, 5];
-    let analyzer = Analyzer::from_slice(slice);
+    let mut analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(None, analyzer.find_any_pattern(1));
     assert_eq!(Some(pat![Plus(3), Plus(-1)]), analyzer.find_any_pattern(4));
@@ -24,7 +24,7 @@ fn find_any_pattern() {
 #[test]
 fn find_patterns_of_length() {
     let slice = &[2, 4, 2, 4, 2];
-    let analyzer = Analyzer::from_slice(slice);
+    let mut analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(Vec::<Pattern>::new(), analyzer.find_patterns_of_length(3));
     assert_eq!(
@@ -53,7 +53,7 @@ fn find_patterns_of_length() {
 #[test]
 fn find_patterns() {
     let slice = &[2, 4, 2, 4, 2];
-    let analyzer = Analyzer::from_slice(slice);
+    let mut analyzer = Analyzer::from_slice(slice);
 
     assert_eq!(Vec::<Pattern>::new(), analyzer.find_patterns(1));
     assert_eq!(

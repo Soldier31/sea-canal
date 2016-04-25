@@ -16,7 +16,7 @@ fn find_any_pattern() {
     let root4_pattern = CustomPatternElem::new(root4, "root 4");
 
     let slice = &[1, 2, 16, 2, 3, 81, 3];
-    let analyzer = Analyzer::with_custom_patterns(slice, vec![pow4_pattern.clone(), root4_pattern.clone()]);
+    let mut analyzer = Analyzer::with_custom_patterns(slice, false, vec![pow4_pattern.clone(), root4_pattern.clone()]);
 
     assert_eq!(Some(pat![Plus(1), Custom(pow4_pattern), Custom(root4_pattern)]), analyzer.find_any_pattern(4));
 }
