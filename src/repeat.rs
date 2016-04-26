@@ -1,10 +1,6 @@
 // Ugh, this mix of imperative and functional programming feels really wrong
 pub fn is_repeating_with_predicate<T, P>(slice: &[T], is_match: P) -> bool where P: Fn(&T, &T) -> bool {
     for i in 2..slice.len() {
-        if slice.len() % i != 0 {
-            continue;
-        }
-
         let mut chunks = slice.chunks(i);
 
         let first = match chunks.next() {

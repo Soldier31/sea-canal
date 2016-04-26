@@ -13,7 +13,7 @@ pub enum PatternElem {
     CubeRoot,
     Custom(CustomPatternElem),
     Div(i32),
-    Meta(Box<PatternElem>, usize),
+    Meta(Pattern),
     Mod(i32),
     Mult(i32),
     Plus(i32),
@@ -78,13 +78,13 @@ impl Display for PatternElem {
             PatternElem::SquareRoot => write!(fmt, "root 2"),
             PatternElem::CubeRoot => write!(fmt, "root 3"),
             PatternElem::Custom(CustomPatternElem { ref repr, .. }) => write!(fmt, "{}", repr),
-            PatternElem::Meta(ref elem, id) => write!(fmt, "{}[{}]", elem, id),
+            PatternElem::Meta(ref pat) => write!(fmt, "[{}...]", pat),
         }
     }
 }
 
 /// A sequence of operations defining a pattern.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Pattern(Vec<PatternElem>);
 
 impl IntoIterator for Pattern {

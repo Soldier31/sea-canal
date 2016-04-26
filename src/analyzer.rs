@@ -9,7 +9,6 @@ use stepper::Stepper;
 pub struct Analyzer {
     choices: Vec<PatternElemChoice>,
     meta: bool,
-    meta_count: usize,
 }
 
 impl Analyzer {
@@ -25,7 +24,6 @@ impl Analyzer {
     /// Same as `from_slice`, but allows custom patterns to be specified.
     pub fn with_custom_patterns(seq: &[i32], meta: bool, pats: Vec<CustomPatternElem>) -> Self {
         Analyzer {
-            meta_count: 0,
             meta: meta,
             choices: (0..seq.len() - 1).map(|i|
                          PatternElemChoice::from_i32_pair(seq[i], seq[i + 1], pats.clone())
@@ -62,10 +60,18 @@ impl Analyzer {
         for i in 0..range {
             let choices: Vec<_> = step!(i => self.len(); range).map(|i| self.choices[i].clone()).collect();
 
+            let meta_patterns = if self.meta {
+                self.find_meta_patterns(i, range)
+            } else {
+                Vec::new()
+            };
+
             let mut new = Vec::new();
 
             for pat in pats.iter_mut() {
-                new.extend(pat.extend_each(Self::intersection(&choices[..]).into_iter()));
+                let mut new_pats = Self::intersection(&choices[..]);
+                new_pats.extend(meta_patterns.clone());
+                new.extend(pat.extend_each(new_pats.into_iter()).into_iter());
             }
 
             pats = new;
@@ -74,11 +80,7 @@ impl Analyzer {
             pats.sort();
         }
 
-        if pats.is_empty() && self.meta {
-            self.find_meta_patterns(0, range)
-        } else {
-            pats
-        }
+        pats
     }
 
     /// Finds patterns of maximum size `max` (in terms of number of operations) that describe the
@@ -111,17 +113,10 @@ impl Analyzer {
         slice.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
     }
 
-    fn find_meta_patterns(&mut self, offset: usize, range: usize) -> Vec<Pattern> {
+    fn find_meta_patterns(&mut self, offset: usize, range: usize) -> Vec<PatternElem> {
         let choices: Vec<_> = step!(offset => self.len(); range).map(|i| self.choices[i].clone()).collect();
         let meta_analyzer = MetaAnalyzer::new(choices);
 
-        meta_analyzer.find_patterns().into_iter().map(|pat| {
-            let new_pat = pat.into_iter().map(|elem| {
-                PatternElem::Meta(Box::new(elem), self.meta_count)
-            }).collect();
-
-            self.meta_count += 1;
-            new_pat
-        }).collect()
+        meta_analyzer.find_patterns().into_iter().map(|pat| PatternElem::Meta(pat)).collect()
     }
 }
