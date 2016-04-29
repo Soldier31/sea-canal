@@ -41,7 +41,7 @@ impl Analyzer {
     /// operations) that describes the given sequence. It returns the smallest such pattern it can
     /// find .
     pub fn find_any_pattern(&self, max: usize) -> Option<Pattern> {
-        for i in 1..max {
+        for i in 1..max + 1 {
             let mut vec = self.find_patterns_of_length(i);
 
             // TODO: Short-circuit finding one pattern instead of all of them
@@ -88,7 +88,7 @@ impl Analyzer {
     /// sequence can be described by a pattern of two operations, it will return all such patterns,
     /// but none of size three or greater).
     pub fn find_patterns(&self, max: usize) -> Vec<Pattern> {
-        for i in 1..max {
+        for i in 1..max + 1 {
             let vec = self.find_patterns_of_length(i);
 
             if !vec.is_empty() {
