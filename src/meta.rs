@@ -43,7 +43,7 @@ impl MetaAnalyzer {
                 }
             }
 
-            let mut analyzer = Analyzer::from_slice(&operands);
+            let analyzer = Analyzer::from_slice(&operands);
             if analyzer.find_any_pattern_of_length(1).is_none() {
                 return false;
             }

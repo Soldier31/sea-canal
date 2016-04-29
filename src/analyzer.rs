@@ -32,7 +32,7 @@ impl Analyzer {
     }
 
     /// Attempts to find exactly one pattern of `n` operations that described the given sequence.
-    pub fn find_any_pattern_of_length(&mut self, n: usize) -> Option<Pattern> {
+    pub fn find_any_pattern_of_length(&self, n: usize) -> Option<Pattern> {
         // TODO: Short-circuit finding one pattern instead of all of them
         self.find_patterns_of_length(n).pop()
     }
@@ -40,7 +40,7 @@ impl Analyzer {
     /// Attempts to find exactly one pattern of maximum size `max` (in terms of number of
     /// operations) that describes the given sequence. It returns the smallest such pattern it can
     /// find .
-    pub fn find_any_pattern(&mut self, max: usize) -> Option<Pattern> {
+    pub fn find_any_pattern(&self, max: usize) -> Option<Pattern> {
         for i in 1..max {
             let mut vec = self.find_patterns_of_length(i);
 
@@ -54,7 +54,7 @@ impl Analyzer {
     }
 
     /// Finds all patterns with `n` operations that describe the given sequence.
-    pub fn find_patterns_of_length(&mut self, range: usize) -> Vec<Pattern> {
+    pub fn find_patterns_of_length(&self, range: usize) -> Vec<Pattern> {
         let mut pats = vec![Pattern::empty()];
 
         for i in 0..range {
@@ -87,7 +87,7 @@ impl Analyzer {
     /// given sequence. It will return all such patterns that are of minimal size (i.e. if a
     /// sequence can be described by a pattern of two operations, it will return all such patterns,
     /// but none of size three or greater).
-    pub fn find_patterns(&mut self, max: usize) -> Vec<Pattern> {
+    pub fn find_patterns(&self, max: usize) -> Vec<Pattern> {
         for i in 1..max {
             let vec = self.find_patterns_of_length(i);
 
@@ -113,7 +113,7 @@ impl Analyzer {
         slice.into_iter().fold(base, |set, choice| set.intersection(&choice.0).cloned().collect())
     }
 
-    fn find_meta_patterns(&mut self, offset: usize, range: usize) -> Vec<PatternElem> {
+    fn find_meta_patterns(&self, offset: usize, range: usize) -> Vec<PatternElem> {
         let choices: Vec<_> = step!(offset => self.len(); range).map(|i| self.choices[i].clone()).collect();
         let meta_analyzer = MetaAnalyzer::new(choices);
 
