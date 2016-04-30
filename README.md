@@ -251,7 +251,7 @@ value of `8`).
 
 On their own, patterns with constants are not very interesting because they tend
 to start repeating after the second iteration. However, when used with
-[meta-patterns](meta-patterns), this will not necessarily occur.
+[meta-patterns](#meta-patterns), this will not necessarily occur.
 
 ### Custom operations
 
