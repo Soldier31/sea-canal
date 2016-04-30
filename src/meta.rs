@@ -16,10 +16,10 @@ impl MetaAnalyzer {
     pub fn find_patterns(&self) -> Vec<Pattern> {
         let mut patterns = vec![Pattern::empty()];
 
-        for choice in self.choices.iter() {
+        for choice in &self.choices {
             let mut new = Vec::new();
 
-            for pat in patterns.iter_mut() {
+            for pat in &mut patterns {
                 new.extend(pat.extend_each(choice.clone().into_iter()));
             }
 

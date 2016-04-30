@@ -57,7 +57,7 @@ impl Analyzer {
             }
         }
 
-        return None;
+        None
     }
 
     /// Finds all patterns with `n` operations that describe the given sequence.
@@ -75,7 +75,7 @@ impl Analyzer {
 
             let mut new = Vec::new();
 
-            for pat in pats.iter_mut() {
+            for pat in &mut pats {
                 let mut new_pats = Self::intersection(&choices[..]);
                 new_pats.extend(meta_patterns.clone());
                 new.extend(pat.extend_each(new_pats.into_iter()).into_iter());
@@ -103,7 +103,7 @@ impl Analyzer {
             }
         }
 
-        return Vec::new();
+        Vec::new()
     }
 
     #[inline]
@@ -124,6 +124,6 @@ impl Analyzer {
         let choices: Vec<_> = step!(offset => self.len(); range).map(|i| self.choices[i].clone()).collect();
         let meta_analyzer = MetaAnalyzer::new(choices);
 
-        meta_analyzer.find_patterns().into_iter().map(|pat| PatternElem::Meta(pat)).collect()
+        meta_analyzer.find_patterns().into_iter().map(PatternElem::Meta).collect()
     }
 }

@@ -3,7 +3,7 @@ use std::iter::FromIterator;
 
 use pattern::{CustomPatternElem, PatternElem};
 
-/// A set of PatternElems, representing the set of valid operations at a given point in a sequence.
+/// A set of `PatternElems`, representing the set of valid operations at a given point in a sequence.
 #[derive(Clone, Debug)]
 pub struct PatternElemChoice(pub HashSet<PatternElem>);
 
