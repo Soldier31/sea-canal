@@ -23,3 +23,12 @@ fn meta_find_patterns_of_length() {
         ],
         analyzer.find_patterns_of_length(2));
 }
+
+#[test]
+fn mixed_operand_meta_pattern() {
+    let slice = &[10, 11, 10, 20, 10, 13, 10, 40];
+    let analyzer = Analyzer::with_meta(slice);
+
+    assert_eq!(None, analyzer.find_any_pattern(1));
+    assert_eq!(Some(pat!(Meta(pat!(Plus(1), Mult(2), Plus(3), Mult(4))), Const(10))), analyzer.find_any_pattern(4));
+}
