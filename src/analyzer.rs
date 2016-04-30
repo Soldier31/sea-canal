@@ -12,17 +12,24 @@ pub struct Analyzer {
 }
 
 impl Analyzer {
-    /// Creates a new Analyze from a slice of integers.
+    /// Creates a new Analyzer from a slice of integers.
     pub fn from_slice(seq: &[i32]) -> Self {
-        Self::with_custom_patterns(seq, false, Vec::new())
+        Self::with_custom_patterns(seq, Vec::new())
     }
 
+    /// Same as `from_slice`, but also finds meta-patterns.
     pub fn with_meta(seq: &[i32]) -> Self {
-        Self::with_custom_patterns(seq, true, Vec::new())
+        Self::with_options(seq, true, Vec::new())
     }
 
-    /// Same as `from_slice`, but allows custom patterns to be specified.
-    pub fn with_custom_patterns(seq: &[i32], meta: bool, pats: Vec<CustomPatternElem>) -> Self {
+    /// Same as `from_slice`, but allows custom patterns elements to be specified.
+    pub fn with_custom_patterns(seq: &[i32], pats: Vec<CustomPatternElem>) -> Self {
+        Self::with_options(seq, false, pats)
+    }
+
+    /// Creates a new Analyzer, specifying custom pattern elements and whether meta-patterns
+    /// should be found.
+    pub fn with_options(seq: &[i32], meta: bool, pats: Vec<CustomPatternElem>) -> Self {
         Analyzer {
             meta: meta,
             choices: (0..seq.len() - 1).map(|i|
