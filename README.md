@@ -44,7 +44,7 @@ any other Cargo package.
 Add the following to your `Cargo.toml` under the `[dependencies]` section:
 
 ```
-sea-canal = "0.2"
+sea-canal = "0.3"
 ```
 
 Add the following to the root of your project:
@@ -101,7 +101,7 @@ arithmetic boring).
 
 First, SeaCanal looks at each pair of adjacent numbers in the sequence and
 computes the possible operations that could lead from one to another. You can,
-see the operations it supports in [Operation Types](#operation-types)).
+see the operations it supports in [Operation Types](#operation-types).
 For example, the analysis of the first sequence above would look like this:
 
 ```
@@ -124,9 +124,9 @@ if it can't find one that fits, then it tries to find one with two operations.
 This keeps repeating until it finds a pattern than matches or it has reaches an
 upper bound (which is passed in by the user). This is to ensure that it doesn't
 generate useless patterns. This is generally helpful; for this example, the
-pattern `[/7, *3, *3, /3, +2, *5, -6]` is not very meaningful, despite the fact
-that these numbers *could* technically be the first iteration of a sequence
-described by that pattern.
+pattern `[/7, *3, *3, /3, +2, *5, -6]` is not very meaningful for the above
+sequence, despite the fact that these numbers *could* technically be the first
+iteration of such a pattern.
 
 To identify a pattern of a given length `n`, SeaCanal divides up the transitions
 into slices of size `n` (the last slice might be smaller, which is fine), and
@@ -266,9 +266,9 @@ a number to the fourth power:
 #[macro_use]
 extern crate sea_canal;
 
-use sea_canal::{Analyze, Analyzer};
-use sea_canal::pattern::{CustomPatternElem, Pattern};
-use sea_canal::pattern::PatternElem::*;
+use sea_canal::Analyzer;
+use sea_canal::{CustomPatternElem, Pattern};
+use sea_canal::PatternElem::*;
 
 fn pow4(i: i32, j: i32) -> bool {
     i * i * i * i == j
@@ -312,12 +312,13 @@ can modify the above sequence to fit the pattern `[+1, *2, +3, *4...], =10`:
 
 Meta-patterns are implemented by analyzing the sequence of the operands of the
 choices and seeing if a pattern emerges. To be a valid meta-pattern, each
-operand must have a numerical parameter (e.g. `/` works, but not `root 2`) and
-the types of the operands must be repeating.
+operand must have a numerical parameter (e.g. `/` works, but not `root 2`, since
+there is no implemented operation for arbtrary roots) and the types of the operands
+must be repeating.
 
 Note that when searching for a pattern among the numerical values of the
 operands, meta-patterns are *not* considered. For instance, if a sequence is
-described by the operations [+1, +2, +4, +7, +11], it will not report finding a
+described by the operations `[+1, +2, +4, +7, +11]`, it will not report finding a
 meta-pattern.
 
 
